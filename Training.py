@@ -1,7 +1,8 @@
 import numpy as np
 import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from keras.applications.mobilenet_v2 import MobileNetV2
+from keras.layers import Dense, GlobalAveragePooling2D
 from keras.preprocessing.image import ImageDataGenerator
 
 # If you have more than one GPU, you may need to modify this to select the appropriate GPU or handle multiple GPUs.
@@ -15,22 +16,18 @@ if gpus:
         # Memory growth must be set before GPUs have been initialized
         print(e)
 
-# Define the model
+base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+
+# Freeze the base model layers
+base_model.trainable = False
+
+# Build the Sequential model using mobilenet v2 model
+# Tried creating my own but failed to be accurate and there seemed to be many issues  
 model = Sequential([
-    Conv2D(16, (3, 3), activation='relu', input_shape=(300, 300, 3)),
-    Conv2D(16, (3, 3), activation='relu'),
-    Conv2D(16, (3, 3), activation='relu'),
-    MaxPooling2D((2, 2)),
-    Conv2D(32, (3, 3), activation='relu'),
-    Conv2D(32, (3, 3), activation='relu'),
-    Conv2D(32, (3, 3), activation='relu'),
-    MaxPooling2D((2, 2)),
-    Conv2D(64, (3, 3), activation='relu'),
-    Conv2D(64, (3, 3), activation='relu'),
-    Conv2D(64, (3, 3), activation='relu'),
-    Flatten(),
-    Dense(128, activation='relu'),
-    Dense(26, activation='softmax')
+    base_model,
+    GlobalAveragePooling2D(),
+    Dense(1024, activation='relu'),
+    Dense(26, activation='softmax')  # Assuming 26 classes for the dataset
 ])
 
 # Compile the model
@@ -58,7 +55,7 @@ model.fit(train_batches,
           steps_per_epoch=len(train_batches),
           validation_data=valid_batches,
           validation_steps=len(valid_batches),
-          epochs=5,  # You can change the number of epochs
+          epochs=2,  # You can change the number of epochs
           verbose=1)
 
 # Save the model
