@@ -1,6 +1,6 @@
 # American Sign Language Recognition Bot
 
-Welcome to the repository for our innovative American Sign Language (ASL) Recognition Bot. Utilizing state-of-the-art technology such as MediaPipe, TensorFlow, Keras, and OpenCV, this project aims to bridge the communication gap for those who rely on sign language.
+Welcome to the repository for our innovative American Sign Language (ASL) Recognition Bot. Utilizing state-of-the-art technology such as MediaPipe, TensorFlow, Keras, OpenCV and SciKit Learn this project aims to bridge the communication gap for those who rely on sign language. This project was my first attempt at applying my knowledge in AI.
 
 ## Overview
 
